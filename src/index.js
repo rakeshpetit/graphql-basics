@@ -21,17 +21,20 @@ const posts = [{
     id: 1,
     title: 'RN best practices',
     body: 'body of RN best practices',
-    published: true
+    published: true,
+    author: 1
 }, {
     id: 1,
     title: 'Learn GraphQL',
     body: 'body of GraphQL',
-    published: false
+    published: false,
+    author: 1
 }, {
     id: 1,
     title: 'Learn to make pani puri',
     body: 'body of Pani puri',
-    published: true
+    published: true,
+    author: 2
 }]
 
 const typeDefs = `
@@ -54,6 +57,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean
+        author: User!
     }
 `
 
@@ -85,6 +89,11 @@ const resolvers = {
                 body: 'A thoughtbot game',
                 published: false
             }
+        }
+    },
+    Post: {
+        author(parent, args, ctx, info) {
+            return users.find((user) => user.id === parent.author)
         }
     }
 }
