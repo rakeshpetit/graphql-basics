@@ -37,10 +37,28 @@ const posts = [{
     author: 2
 }]
 
+const comments = [{
+    id: 1,
+    text: 'Loved it'
+},
+{
+    id: 2,
+    text: 'Liked it'
+},
+{
+    id: 3,
+    text: 'Makes total sense'
+},
+{
+    id: 4,
+    text: 'I disagree with this'
+}]
+
 const typeDefs = `
     type Query {
         users(query: String): [User!]!
         posts: [Post!]!
+        comments: [Comment!]!
         me: User!
         post: Post!
     }
@@ -60,6 +78,11 @@ const typeDefs = `
         published: Boolean
         author: User!
     }
+
+    type Comment {
+        id: ID!
+        text: String!
+    }
 `
 
 const resolvers = {
@@ -74,6 +97,9 @@ const resolvers = {
         },
         posts(parent, args, ctx, info) {
             return posts
+        },
+        comments(parent, args, ctx, info) {
+            return comments
         },
         me() {
             return {
