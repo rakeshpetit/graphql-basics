@@ -1,10 +1,43 @@
 import { GraphQLServer } from 'graphql-yoga'
 
+//Demo data
+const users = [{
+    id: 1,
+    name: 'Rakesh',
+    email: 'rak@example.com',
+    age: 27
+}, {
+    id: 2,
+    name: 'Aiswarya',
+    email: 'aiswa@example.com',
+},
+{
+    id: 3,
+    name: 'Eashwar',
+    email: 'eash@example.com',
+}]
+
+const posts = [{
+    id: 1,
+    title: 'RN best practices',
+    body: 'body of RN best practices',
+    published: true
+}, {
+    id: 1,
+    title: 'Learn GraphQL',
+    body: 'body of GraphQL',
+    published: false
+}, {
+    id: 1,
+    title: 'Learn to make pani puri',
+    body: 'body of Pani puri',
+    published: true
+}]
+
 const typeDefs = `
     type Query {
-        greeting(name: String): String!
-        add(numbers: [Float!]!): Float!
-        grades: [Int!]!
+        users(query: String): [User!]!
+        posts: [Post!]!
         me: User!
         post: Post!
     }
@@ -20,25 +53,22 @@ const typeDefs = `
         id: ID!
         title: String!
         body: String!
-        isPublished: Boolean
+        published: Boolean
     }
 `
 
 const resolvers = {
     Query: {
-        greeting(parent, args, ctx, info) {
-            if(args.name) {
-                return `Hello ${args.name}`
+        users(parent, args, ctx, info) {
+            if (!args.query) {
+                return users
             }
-            return 'Hello!!'
+            return users.filter((user) =>
+                user.name.toLowerCase().includes(
+                    args.query.toLowerCase()))
         },
-        add(parent, args, ctx, info){
-            if(args.numbers.length === 0)
-            return 0;
-            return args.numbers.reduce((acc, nums) => (nums+acc), 0)
-        },
-        grades() {
-            return [199, 197, 195]
+        posts(parent, args, ctx, info) {
+            return posts
         },
         me() {
             return {
@@ -53,7 +83,7 @@ const resolvers = {
                 id: '12345',
                 title: 'Dungeons and Dragons',
                 body: 'A thoughtbot game',
-                isPublished: false
+                published: false
             }
         }
     }
