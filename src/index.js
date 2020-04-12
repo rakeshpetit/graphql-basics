@@ -24,13 +24,13 @@ const posts = [{
     published: true,
     author: 1
 }, {
-    id: 1,
+    id: 2,
     title: 'Learn GraphQL',
     body: 'body of GraphQL',
     published: false,
     author: 1
 }, {
-    id: 1,
+    id: 3,
     title: 'Learn to make pani puri',
     body: 'body of Pani puri',
     published: true,
@@ -40,22 +40,26 @@ const posts = [{
 const comments = [{
     id: 1,
     text: 'Loved it',
-    author: 1
+    author: 1,
+    post: 1
 },
 {
     id: 2,
     text: 'Liked it',
-    author: 2
+    author: 2,
+    post: 1
 },
 {
     id: 3,
     text: 'Makes total sense',
-    author: 2
+    author: 2,
+    post: 2
 },
 {
     id: 4,
     text: 'I disagree with this',
-    author: 3
+    author: 3,
+    post: 3
 }]
 
 const typeDefs = `
@@ -88,6 +92,7 @@ const typeDefs = `
         id: ID!
         text: String!
         author: User!
+        post: Post!
     }
 `
 
@@ -140,7 +145,10 @@ const resolvers = {
     Comment: {
         author(parent, args, ctx, info) {
             return users.find((user) => user.id === parent.author)
-        } 
+        },
+        post(parent, args, ctx, info) {
+            return posts.find((post) => post.id === parent.post)
+        }
     }
 }
 
