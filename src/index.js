@@ -65,7 +65,7 @@ const comments = [{
 const typeDefs = `
     type Query {
         users(query: String): [User!]!
-        posts: [Post!]!
+        posts(query: String): [Post!]!
         comments: [Comment!]!
         me: User!
         post: Post!
@@ -108,7 +108,12 @@ const resolvers = {
                     args.query.toLowerCase()))
         },
         posts(parent, args, ctx, info) {
-            return posts
+            if (!args.query) {
+                return posts
+            }
+            return posts.filter((post) =>
+                post.title.toLowerCase().includes(
+                    args.query.toLowerCase()))
         },
         comments(parent, args, ctx, info) {
             return comments
