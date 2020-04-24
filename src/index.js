@@ -1,18 +1,19 @@
 import { GraphQLServer } from 'graphql-yoga'
+import uuid from 'uuid/v4'
 
 //Demo data
 const users = [{
-    id: 1,
+    id: "1",
     name: 'Rakesh',
     email: 'rak@example.com',
     age: 27
 }, {
-    id: 2,
+    id: "2",
     name: 'Aiswarya',
     email: 'aiswa@example.com',
 },
 {
-    id: 3,
+    id: "3",
     name: 'Eashwar',
     email: 'eash@example.com',
 }]
@@ -22,43 +23,43 @@ const posts = [{
     title: 'RN best practices',
     body: 'body of RN best practices',
     published: true,
-    author: 1
+    author: "1"
 }, {
     id: 2,
     title: 'Learn GraphQL',
     body: 'body of GraphQL',
     published: false,
-    author: 1
+    author: "1"
 }, {
     id: 3,
     title: 'Learn to make pani puri',
     body: 'body of Pani puri',
     published: true,
-    author: 2
+    author: "2"
 }]
 
 const comments = [{
     id: 1,
     text: 'Loved it',
-    author: 1,
+    author: "1",
     post: 1
 },
 {
     id: 2,
     text: 'Liked it',
-    author: 2,
+    author: "2",
     post: 1
 },
 {
     id: 3,
     text: 'Makes total sense',
-    author: 2,
+    author: "2",
     post: 2
 },
 {
     id: 4,
     text: 'I disagree with this',
-    author: 3,
+    author: "3",
     post: 3
 }]
 
@@ -69,6 +70,11 @@ const typeDefs = `
         comments: [Comment!]!
         me: User!
         post: Post!
+    }
+
+    type Mutation {
+        createUser(name: String!, email: String!, age: Int): User!
+        createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
     }
 
     type User {
@@ -133,6 +139,40 @@ const resolvers = {
                 body: 'A thoughtbot game',
                 published: false
             }
+        }
+    },
+    Mutation: {
+        createUser(parent, args, ctx, info) {
+            const emailTaken = users.some((user) => user.email === args.email)
+
+            if(emailTaken) {
+                throw new Error('Email taken!')
+            }
+
+            const user = {
+                id: uuid(),
+                name: args.name,
+                email: args.email,
+                age: args.age,
+            }
+            users.push(user)
+            return user
+        },
+        createPost(parent, args, ctx, info) { 
+            const userExists = users.some((user) => user.id === args.author)
+            if (!userExists) {
+                throw new Error('User not found!')
+            }
+            const post = {
+                id: uuid(),
+                title: args.title,
+                body: args.body,
+                published: args.published,
+                author: args.author
+            }
+
+            posts.push(post)
+            return post
         }
     },
     Post: {
