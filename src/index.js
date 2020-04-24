@@ -19,19 +19,19 @@ const users = [{
 }]
 
 const posts = [{
-    id: 1,
+    id: "1",
     title: 'RN best practices',
     body: 'body of RN best practices',
     published: true,
     author: "1"
 }, {
-    id: 2,
+    id: "2",
     title: 'Learn GraphQL',
     body: 'body of GraphQL',
     published: false,
     author: "1"
 }, {
-    id: 3,
+    id: "3",
     title: 'Learn to make pani puri',
     body: 'body of Pani puri',
     published: true,
@@ -39,28 +39,28 @@ const posts = [{
 }]
 
 const comments = [{
-    id: 1,
+    id: "1",
     text: 'Loved it',
     author: "1",
-    post: 1
+    post: "1"
 },
 {
-    id: 2,
+    id: "2",
     text: 'Liked it',
     author: "2",
-    post: 1
+    post: "1"
 },
 {
-    id: 3,
+    id: "3",
     text: 'Makes total sense',
     author: "2",
-    post: 2
+    post: "2"
 },
 {
-    id: 4,
+    id: "4",
     text: 'I disagree with this',
     author: "3",
-    post: 3
+    post: "3"
 }]
 
 const typeDefs = `
@@ -75,6 +75,7 @@ const typeDefs = `
     type Mutation {
         createUser(name: String!, email: String!, age: Int): User!
         createPost(title: String!, body: String!, published: Boolean!, author: ID!): Post!
+        createComment(text: String!, author: ID!, post: ID!): Comment!
     }
 
     type User {
@@ -145,7 +146,7 @@ const resolvers = {
         createUser(parent, args, ctx, info) {
             const emailTaken = users.some((user) => user.email === args.email)
 
-            if(emailTaken) {
+            if (emailTaken) {
                 throw new Error('Email taken!')
             }
 
@@ -158,7 +159,7 @@ const resolvers = {
             users.push(user)
             return user
         },
-        createPost(parent, args, ctx, info) { 
+        createPost(parent, args, ctx, info) {
             const userExists = users.some((user) => user.id === args.author)
             if (!userExists) {
                 throw new Error('User not found!')
@@ -173,6 +174,24 @@ const resolvers = {
 
             posts.push(post)
             return post
+        },
+        createComment(parent, args, ctx, info) {
+            const userExists = users.some((user) => user.id === args.author)
+            if (!userExists) {
+                throw new Error('User not found!')
+            }
+            const postValid = posts.some((post) => (post.id === args.post && post.published))
+            if (!postValid) {
+                throw new Error('Post invalid!')
+            }
+            const comment = {
+                id: uuid(),
+                text: args.text,
+                author: args.author,
+                post: args.post,
+            }
+            comments.push(comment)
+            return comment
         }
     },
     Post: {
