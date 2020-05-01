@@ -1,4 +1,4 @@
-import { users, posts, comments } from '../demo-data'
+import { users, posts, comments } from './mutation'
 
 const queryResolvers = {
     users(parent, args, ctx, info) {
