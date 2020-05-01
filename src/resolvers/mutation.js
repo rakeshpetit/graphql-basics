@@ -109,6 +109,16 @@ const mutationResolvers = {
         posts.push(post)
         return post
     },
+    deletePost(parent, args, ctx, info) {
+        const postIndex = posts.findIndex(post => post.id === args.id)
+
+        if (postIndex === -1) {
+            throw new Error('Post not found!')
+        }
+        const deletePosts = posts.splice(postIndex, 1)
+        comments = comments.filter(comment => comment.post !== args.id)
+        return deletePosts[0]
+    },
     createComment(parent, { data: args }, ctx, info) {
         const userExists = users.some((user) => user.id === args.author)
         if (!userExists) {
