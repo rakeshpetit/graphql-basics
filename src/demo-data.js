@@ -1,5 +1,5 @@
 //Demo data
-const users = [{
+let users = [{
     id: "1",
     name: 'Rakesh',
     email: 'rak@example.com',
@@ -15,7 +15,7 @@ const users = [{
     email: 'eash@example.com',
 }]
 
-const posts = [{
+let posts = [{
     id: "1",
     title: 'RN best practices',
     body: 'body of RN best practices',
@@ -35,7 +35,7 @@ const posts = [{
     author: "2"
 }]
 
-const comments = [{
+let comments = [{
     id: "1",
     text: 'Loved it',
     author: "1",
