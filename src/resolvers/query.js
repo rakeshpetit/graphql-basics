@@ -1,24 +1,22 @@
-import { users, posts, comments } from './mutation'
-
-const queryResolvers = {
-    users(parent, args, ctx, info) {
+const Query = {
+    users(parent, args, { db }, info) {
         if (!args.query) {
-            return users
+            return db.users
         }
-        return users.filter((user) =>
+        return db.users.filter((user) =>
             user.name.toLowerCase().includes(
                 args.query.toLowerCase()))
     },
-    posts(parent, args, ctx, info) {
+    posts(parent, args, { db }, info) {
         if (!args.query) {
-            return posts
+            return db.posts
         }
-        return posts.filter((post) =>
+        return db.posts.filter((post) =>
             post.title.toLowerCase().includes(
                 args.query.toLowerCase()))
     },
-    comments(parent, args, ctx, info) {
-        return comments
+    comments(parent, args, { db }, info) {
+        return db.comments
     },
     me() {
         return {
@@ -38,4 +36,4 @@ const queryResolvers = {
     }
 }
 
-export { queryResolvers }
+export { Query as default }
