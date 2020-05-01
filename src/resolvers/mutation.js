@@ -77,7 +77,6 @@ const Mutation = {
         return deletePosts[0]
     },
     updatePost(parent, args, { db }, info) {
-        console.log(args)
         const { id, data } = args
         const post = db.posts.find(post => post.id === id)
         if (!post) {
@@ -120,6 +119,17 @@ const Mutation = {
         }
         const deleteComments = db.comments.splice(commentIndex, 1)
         return deleteComments[0]
+    },
+    updateComment(parent, args, { db }, info) {
+        const { id, data } = args
+        const comment = db.comments.find(comment => comment.id === id)
+        if (!comment) {
+            throw new Error('Comment not found!')
+        }
+        if (typeof data.text === 'string') {
+            comment.text = data.text
+        }
+        return comment
     }
 }
 
