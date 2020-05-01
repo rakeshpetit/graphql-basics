@@ -2,39 +2,36 @@ import uuid from 'uuid/v4'
 import { users, posts, comments } from '../demo-data'
 
 const mutationResolvers = {
-    createUser(parent, args, ctx, info) {
+    createUser(parent, { data: args }, ctx, info) {
         const emailTaken = users.some((user) => user.email === args.email)
-
+        console.log('arg', args)
+        console.log('emailTaken', emailTaken)
         if (emailTaken) {
             throw new Error('Email taken!')
         }
 
         const user = {
             id: uuid(),
-            name: args.name,
-            email: args.email,
-            age: args.age,
+            ...args,
         }
+        console.log('user', user)
         users.push(user)
         return user
     },
-    createPost(parent, args, ctx, info) {
+    createPost(parent, { data: args }, ctx, info) {
         const userExists = users.some((user) => user.id === args.author)
         if (!userExists) {
             throw new Error('User not found!')
         }
         const post = {
             id: uuid(),
-            title: args.title,
-            body: args.body,
-            published: args.published,
-            author: args.author
+            ...args
         }
 
         posts.push(post)
         return post
     },
-    createComment(parent, args, ctx, info) {
+    createComment(parent, { data: args }, ctx, info) {
         const userExists = users.some((user) => user.id === args.author)
         if (!userExists) {
             throw new Error('User not found!')
@@ -47,9 +44,7 @@ const mutationResolvers = {
 
         const comment = {
             id: uuid(),
-            text: args.text,
-            author: args.author,
-            post: args.post,
+            ...args
         }
         comments.push(comment)
         return comment
